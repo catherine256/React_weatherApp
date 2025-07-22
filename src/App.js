@@ -5,11 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>
-          React Debuggin
-        </h1>
-
-        <Weather city = 'Nairobi' />
+        <Weather/>
       </header>
     </div>
   );

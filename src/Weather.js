@@ -1,24 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { ClipLoader } from "react-spinners";
 
-export default function Weather(props){
+function WeatherApp() {
+  const [city, setCity] = useState("");
+  const [temperature, setTemperature] = useState(null);
+  const [error, setError] = useState("");
 
-    function handleResponse(response){
-        alert(`The weather in ${response.data.name} is ${Math.round(response.data.main.temp)}°C`);
+  const handleSearch = async () => {
+    const apiKey = "082d3d02ffdb12f2fd9b259e2ced1d0d";
+    const units = "metric";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
+
+    try {
+      const response = await axios.get(url);
+      setTemperature(response.data.main.temp);
+      setError("");
+    } catch (err) {
+      setError("City not found or API error.");
+      setTemperature(null);
     }
-    const apiKey = "e450bc345a80a08ada69fd5c714d871d"; // Replace with your OpenWeather API key
-    const units = "metric"; // Use 'imperial' for Fahrenheit
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=${apiKey}&units=${units}`;
-    axios.get(url).then(handleResponse);
-    return(
-        <ClipLoader
-        color='blue'
-        loading='betLoader'
-        size={80}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />
+  };
 
-    );
+  return (
+    <div className="App">
+      <h1>Weather Search Engine 🌤️</h1>
+      <input
+        type="text"
+        placeholder="Enter city..."
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
+      <button onClick={handleSearch}>Search</button>
+
+      {temperature !== null && (
+        <h2>
+          Temperature in {city}: {temperature}°C
+        </h2>
+      )}
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </div>
+  );
 }
+
+export default WeatherApp;
